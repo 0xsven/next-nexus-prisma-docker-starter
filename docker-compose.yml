@@ -1,0 +1,12 @@
+version: '3'
+services:
+  frontend:
+    build: ./frontend
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80

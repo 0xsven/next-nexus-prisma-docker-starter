@@ -1,4 +1,8 @@
-name: Docker Image CI
+name: Docker Image CD
+
+env:
+  REGISTRY: "registry.digitalocean.com/literal"
+  IMAGE_NAME: "image_name"
 
 on:
   push:
@@ -8,11 +12,24 @@ on:
 
 jobs:
 
-  build:
-
+  build_and_push:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker-compose build --tag my-image-name:$(date +%s)
+      - name: Checkout master
+        uses: actions/checkout@v2
+
+      - name: Build container image
+        run: DATABASE_URL=${{ secrets.DATABASE_URL }} docker-compose build
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)

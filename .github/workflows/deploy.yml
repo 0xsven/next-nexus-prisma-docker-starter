@@ -31,14 +31,11 @@ jobs:
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 600
 
-      - name: Add DigitalOcean container registry credentials to your Docker configuration file
-        run: snap connect doctl:dot-docker
+      - name: Tag docker image
+        run: docker tag $(echo $IMAGE_NAME) $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
 
       - name: Push to registry
         run: docker-compose push
-
-      # - name: Tag docker image
-      #   run: docker tag $(echo $IMAGE_NAME) $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
 
       # - name: Push image to DigitalOcean Container Registry
       #   run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}

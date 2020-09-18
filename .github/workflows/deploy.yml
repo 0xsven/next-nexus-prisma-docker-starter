@@ -31,6 +31,9 @@ jobs:
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 600
 
+      - name: Add DigitalOcean container registry credentials to your Docker configuration file
+        run: snap connect doctl:dot-docker
+
       - name: Push to registry
         run: docker-compose push
 

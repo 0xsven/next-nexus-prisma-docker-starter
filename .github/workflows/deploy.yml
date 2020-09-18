@@ -31,17 +31,20 @@ jobs:
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 600
 
-      - name: Tag docker image
-        run: docker tag $(echo $IMAGE_NAME) $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
+      - name: Push to registry
+        run: docker-compose push
 
-      - name: Push image to DigitalOcean Container Registry
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
+      # - name: Tag docker image
+      #   run: docker tag $(echo $IMAGE_NAME) $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
 
-  deploy:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    needs: build_and_push
+      # - name: Push image to DigitalOcean Container Registry
+      #   run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
 
-    steps:
-      - name: Create new droplet from container image
-        run: doctl compute droplet create $(echo $GITHUB_REF):$(echo $GITHUB_SHA):$(echo $GITHUB_RUN_ID) --region FRA1 --image $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10} --size s-1vcpu-2gb
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'push'
+  #   needs: build_and_push
+
+  #   steps:
+  #     - name: Create new droplet from container image
+  #       run: doctl compute droplet create $(echo $GITHUB_REF):$(echo $GITHUB_SHA):$(echo $GITHUB_RUN_ID) --region FRA1 --image $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10} --size s-1vcpu-2gb

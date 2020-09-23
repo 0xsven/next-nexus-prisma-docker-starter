@@ -54,7 +54,7 @@ jobs:
           ssh-private-key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
 
       - name: 'Change in config'
-      - run: echo "MaxSessions 150" >> sshd_config
+        run: echo "MaxSessions 150" >> sshd_config
 
       - run: sudo /bin/systemctl restart sshd.service && echo "ok"
 

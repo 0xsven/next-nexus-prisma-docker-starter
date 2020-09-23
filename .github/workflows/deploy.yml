@@ -46,10 +46,15 @@ jobs:
     # needs: build_and_push
 
     steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+
       - uses: webfactory/ssh-agent@v0.4.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
 
       - run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
 
-      - run: ssh root@207.154.228.169 "ls"
+      # - run: ssh root@207.154.228.169 "ls"
+
+      - run: DOCKER_HOST=“ssh://root@207.154.228.169” docker-compose -f ./docker-compose.prod.yml up -d

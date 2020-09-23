@@ -62,4 +62,4 @@ jobs:
 
       # - run: ssh root@207.154.228.169 "ls"
 
-      - run: DOCKER_HOST="ssh://root@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d
+      - run: DOCKER_HOST="ssh://docker@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d

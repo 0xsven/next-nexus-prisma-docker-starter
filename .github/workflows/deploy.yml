@@ -12,39 +12,42 @@ on:
 #     branches: [ master ]
 
 jobs:
-  build_and_push:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
-    steps:
-      - name: Checkout master
-        uses: actions/checkout@v2
-
-      - name: Build container image
-        run: DATABASE_URL=${{ secrets.DATABASE_URL }} docker-compose build
-
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-      - name: Log in to DigitalOcean Container Registry with short-lived credentials
-        run: doctl registry login --expiry-seconds 600
-
-      - name: Tag docker image
-        run: docker tag $(echo $IMAGE_NAME) $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
-
-      - name: Push to registry
-        run: docker-compose push
-
-      # - name: Push image to DigitalOcean Container Registry
-      #   run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
-
-  # deploy:
+  # build_and_push:
   #   runs-on: ubuntu-latest
   #   if: github.event_name == 'push'
-  #   needs: build_and_push
 
   #   steps:
-  #     - name: Create new droplet from container image
-  #       run: doctl compute droplet create $(echo $GITHUB_REF):$(echo $GITHUB_SHA):$(echo $GITHUB_RUN_ID) --region FRA1 --image $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10} --size s-1vcpu-2gb
+  #     - name: Checkout master
+  #       uses: actions/checkout@v2
+
+  #     - name: Build container image
+  #       run: DATABASE_URL=${{ secrets.DATABASE_URL }} docker-compose build
+
+  #     - name: Install doctl
+  #       uses: digitalocean/action-doctl@v2
+  #       with:
+  #         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+  #     - name: Log in to DigitalOcean Container Registry with short-lived credentials
+  #       run: doctl registry login --expiry-seconds 600
+
+  #     # - name: Tag docker image
+  #     #   run: docker tag $(echo $IMAGE_NAME) $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
+
+  #     - name: Push to registry
+  #       run: docker-compose push
+
+  # - name: Push image to DigitalOcean Container Registry
+  #   run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    # needs: build_and_push
+
+    steps:
+      - uses: webfactory/ssh-agent@v0.4.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
+
+      - run: ssh root@207.154.228.169 "ls"

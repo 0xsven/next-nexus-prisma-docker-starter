@@ -55,7 +55,7 @@ jobs:
 
       - run: echo "MaxSessions 150" >> sshd_config
 
-      - run: /bin/systemctl reload sshd.service
+      - run: sudo /bin/systemctl reload sshd.service
 
       - run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
 

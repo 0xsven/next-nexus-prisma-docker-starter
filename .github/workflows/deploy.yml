@@ -46,37 +46,37 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v2
 
-      # - name: Starts the ssh-agent
-      #   uses: webfactory/ssh-agent@v0.4.0
-      #   with:
-      #     ssh-private-key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
-
-      # - name: Change in config to allow more concurrent ssh connections
-      #   run: echo "MaxSessions 150" >> sshd_config
-
-      # - name: Restart ssh service after config change
-      #   run: sudo /bin/systemctl restart sshd.service && echo "ok"
-
-      # - name: Add ip to known hosts
-      #   run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
-
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-
-      # - name: Log droplet docker into registry
-      #   run: DOCKER_HOST="ssh://docker@207.154.228.169" docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
-
-      # - name: Update docker compose with new images
-      #   run: DOCKER_HOST="ssh://docker@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d
-
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
+      - name: Starts the ssh-agent
+        uses: webfactory/ssh-agent@v0.4.0
         with:
-          host: 207.154.228.169
-          username: root
-          key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
-          port: 22
-          script: whoami
+          ssh-private-key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
+
+      - name: Change in config to allow more concurrent ssh connections
+        run: echo "MaxSessions 150" >> sshd_config
+
+      - name: Restart ssh service after config change
+        run: sudo /bin/systemctl restart sshd.service && echo "ok"
+
+      - name: Add ip to known hosts
+        run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
+      - name: Log droplet docker into registry
+        run: DOCKER_HOST="ssh://docker@207.154.228.169" docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+
+      - name: Update docker compose with new images
+        run: DOCKER_HOST="ssh://docker@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d
+
+      # - name: executing remote ssh commands using password
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: 207.154.228.169
+      #     username: root
+      #     key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
+      #     port: 22
+      #     script: whoami
 
       # - name: Login to registry
       #   run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com

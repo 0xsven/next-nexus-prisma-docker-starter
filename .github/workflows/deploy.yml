@@ -61,7 +61,7 @@ jobs:
         run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
 
       - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v
+        uses: mxschmitt/action-tmate@v3
 
       - name: Log droplet docker into registry
         run: DOCKER_HOST="ssh://docker@207.154.228.169" docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com

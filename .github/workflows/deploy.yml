@@ -10,37 +10,37 @@ on:
 #     branches: [ master ]
 
 jobs:
-  # build_and_push:
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'push'
+  build_and_push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
 
-  #   steps:
-  #     - name: Checkout master
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
 
-  #     - name: Build container image
-  #       run: DATABASE_URL=${{ secrets.DATABASE_URL }} docker-compose build
+      - name: Build container image
+        run: DATABASE_URL=${{ secrets.DATABASE_URL }} docker-compose build
 
-  #     - name: Install doctl
-  #       uses: digitalocean/action-doctl@v2
-  #       with:
-  #         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-  #     - name: Log in to DigitalOcean Container Registry with short-lived credentials
-  #       run: doctl registry login --expiry-seconds 600
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
 
-  #     - name: Tag docker images
-  #       run: docker tag registry.digitalocean.com/literal/frontend:latest frontend #:${GITHUB_SHA::10}
-  #     - run: docker tag registry.digitalocean.com/literal/backend:latest backend #:${GITHUB_SHA::10}
-  #     - run: docker tag registry.digitalocean.com/literal/nginx:latest nginx #:${GITHUB_SHA::10}
+      - name: Tag docker images
+        run: docker tag registry.digitalocean.com/literal/frontend:latest frontend #:${GITHUB_SHA::10}
+      - run: docker tag registry.digitalocean.com/literal/backend:latest backend #:${GITHUB_SHA::10}
+      - run: docker tag registry.digitalocean.com/literal/nginx:latest nginx #:${GITHUB_SHA::10}
 
-  #     - name: Push to registry
-  #       run: docker-compose push
+      - name: Push to registry
+        run: docker-compose push
 
   deploy:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    # needs: build_and_push
+    needs: build_and_push
 
     steps:
       - name: Checkout master
@@ -61,7 +61,7 @@ jobs:
       # - run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
 
       - name: Login to registry
-        run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+        run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --password-stdin ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
 
       - name: Update docker compose with new images
         run: DOCKER_HOST="ssh://docker@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d

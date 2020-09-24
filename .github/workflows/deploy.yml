@@ -40,7 +40,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    # needs: build_and_push
+    needs: build_and_push
 
     steps:
       - name: Checkout master

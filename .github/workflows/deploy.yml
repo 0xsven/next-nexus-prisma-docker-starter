@@ -61,7 +61,7 @@ jobs:
       # - run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
 
       - name: Login to registry
-        run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --password-stdin ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+        run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
 
       - name: Update docker compose with new images
         run: DOCKER_HOST="ssh://docker@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d

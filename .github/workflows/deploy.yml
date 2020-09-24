@@ -2,8 +2,6 @@ name: Docker Image CD
 
 env:
   REGISTRY: 'registry.digitalocean.com/literal'
-  IMAGE_NAME: 'image_name'
-  COMMAND: 'python main.py'
 
 on:
   push:
@@ -31,35 +29,39 @@ jobs:
   #     - name: Log in to DigitalOcean Container Registry with short-lived credentials
   #       run: doctl registry login --expiry-seconds 600
 
-  #     # - name: Tag docker image
-  #     #   run: docker tag $(echo $IMAGE_NAME) $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
+  #     - name: Tag docker images
+  #       run: docker tag registry.digitalocean.com/literal/frontend:latest frontend #:${GITHUB_SHA::10}
+  #     - run: docker tag registry.digitalocean.com/literal/backend:latest backend #:${GITHUB_SHA::10}
+  #     - run: docker tag registry.digitalocean.com/literal/nginx:latest nginx #:${GITHUB_SHA::10}
 
   #     - name: Push to registry
   #       run: docker-compose push
 
-  # - name: Push image to DigitalOcean Container Registry
-  #   run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${GITHUB_SHA::10}
-
   deploy:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    # needs: build_and_push
+    needs: build_and_push
 
     steps:
       - name: Checkout master
         uses: actions/checkout@v2
 
-      - uses: webfactory/ssh-agent@v0.4.0
+      - name: SSH into droplet
+        uses: webfactory/ssh-agent@v0.4.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
 
-      - name: 'Change in config'
-        run: echo "MaxSessions 150" >> sshd_config
+      # - name: Change in config to allow more concurrent ssh connections
+      #   run: echo "MaxSessions 150" >> sshd_config
 
-      - run: sudo /bin/systemctl restart sshd.service && echo "ok"
+      # - name: Restart ssh service after config change
+      # - run: sudo /bin/systemctl restart sshd.service && echo "ok"
 
-      - run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
+      # - name: Add ip to known hosts
+      # - run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
 
-      # - run: ssh root@207.154.228.169 "ls"
+      - name: Login to registry
+        run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
 
-      - run: DOCKER_HOST="ssh://docker@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d
+      - name: Update docker compose with new images
+        run: DOCKER_HOST="ssh://docker@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d

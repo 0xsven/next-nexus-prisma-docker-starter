@@ -55,7 +55,7 @@ jobs:
         run: sudo bash -c "echo 'MaxSessions 150' >> /etc/ssh/sshd_config" && sudo cat /etc/ssh/sshd_config
 
       - name: Restart ssh service after config change
-        run: sudo /bin/systemctl restart sshd.service && echo "ok"
+        run: sudo systemctl restart ssh
 
       - name: Add ip to known hosts
         run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts

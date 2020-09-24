@@ -65,3 +65,5 @@ jobs:
 
       - name: Update docker compose with new images
         run: docker-compose -f ./docker-compose.prod.yml up -d
+
+      - run: docker ps

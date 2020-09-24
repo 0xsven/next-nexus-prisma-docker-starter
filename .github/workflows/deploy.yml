@@ -73,7 +73,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: 207.154.228.169
-          username: docker
+          username: root
           key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
           port: 22
           script: whoami

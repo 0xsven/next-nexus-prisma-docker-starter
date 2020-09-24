@@ -55,7 +55,7 @@ jobs:
         run: echo "MaxSessions 150" >> sshd_config
 
       - name: Restart ssh service after config change
-      - run: sudo /bin/systemctl restart sshd.service && echo "ok"
+        run: sudo /bin/systemctl restart sshd.service && echo "ok"
 
       - name: Add ip to known hosts
         run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
@@ -64,4 +64,4 @@ jobs:
         run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
 
       - name: Update docker compose with new images
-        run: DOCKER_HOST="ssh://docker@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d
+        run: docker-compose -f ./docker-compose.prod.yml up -d

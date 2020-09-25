@@ -30,9 +30,9 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Tag docker images
-        run: docker tag registry.digitalocean.com/literal/frontend:${GITHUB_SHA::10} frontend
-      - run: docker tag registry.digitalocean.com/literal/backend:${GITHUB_SHA::10} backend
-      - run: docker tag registry.digitalocean.com/literal/nginx:${GITHUB_SHA::10} nginx
+        run: docker tag registry.digitalocean.com/literal/frontend:latest frontend
+      - run: docker tag registry.digitalocean.com/literal/backend:latest backend
+      - run: docker tag registry.digitalocean.com/literal/nginx:latest nginx
 
       - name: Push to registry
         run: docker-compose push

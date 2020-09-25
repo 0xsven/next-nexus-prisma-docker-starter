@@ -67,7 +67,7 @@ jobs:
         run: DOCKER_HOST="ssh://root@207.154.228.169" docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
 
       - name: Update docker compose with new images
-        run: DOCKER_HOST="ssh://root@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d
+        run: DOCKER_HOST="ssh://root@207.154.228.169" docker-compose -f ./docker-compose.prod.yml pull -d &&  docker-compose -f ./docker-compose.prod.yml up -d
 
       # - name: executing remote ssh commands using password
       #   uses: appleboy/ssh-action@master

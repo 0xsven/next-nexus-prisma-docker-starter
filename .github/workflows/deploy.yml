@@ -44,10 +44,10 @@ jobs:
     needs: build_and_push
 
     steps:
-      - name: Sleep for 30 seconds
+      - name: Sleep for 10 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '30s'
+          time: '10s'
 
       - name: Checkout master
         uses: actions/checkout@v2
@@ -57,16 +57,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
 
-      - name: Change in config to allow more concurrent ssh connections
-        run: sudo bash -c "echo 'MaxSessions 150' >> /etc/ssh/sshd_config" && sudo cat /etc/ssh/sshd_config
+      # - name: Change in config to allow more concurrent ssh connections
+      #   run: sudo bash -c "echo 'MaxSessions 150' >> /etc/ssh/sshd_config" && sudo cat /etc/ssh/sshd_config
 
-      - name: Restart ssh service after config change
-        run: sudo systemctl restart ssh
+      # - name: Restart ssh service after config change
+      #   run: sudo systemctl restart ssh
 
       - name: Add ip to known hosts
         run: ssh-keyscan $DROPLET_IP >> ~/.ssh/known_hosts
 
-      - name: Log droplet docker into registry
+      - name: Pull latest images
         run: DOCKER_HOST="ssh://root@$DROPLET_IP" docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
 
       - name: Update docker compose with new images

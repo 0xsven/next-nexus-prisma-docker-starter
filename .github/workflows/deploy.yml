@@ -2,6 +2,7 @@ name: Docker Image CD
 
 env:
   REGISTRY: 'registry.digitalocean.com/literal'
+  DROPLET_IP: '207.154.228.169'
 
 on:
   push:
@@ -58,19 +59,19 @@ jobs:
         run: sudo systemctl restart ssh
 
       - name: Add ip to known hosts
-        run: ssh-keyscan 207.154.228.169 >> ~/.ssh/known_hosts
+        run: ssh-keyscan $(echo $IMAGE_NAME) >> ~/.ssh/known_hosts
 
       - name: Log droplet docker into registry
-        run: DOCKER_HOST="ssh://root@207.154.228.169" docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+        run: DOCKER_HOST="ssh://root@$(echo $IMAGE_NAME)" docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
 
       - name: Update docker compose with new images
-        run: DOCKER_HOST="ssh://root@207.154.228.169" docker-compose -f ./docker-compose.prod.yml pull
+        run: DOCKER_HOST="ssh://root@$(echo $IMAGE_NAME)" docker-compose -f ./docker-compose.prod.yml pull
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
 
       - name: Update docker compose with new images
-        run: DOCKER_HOST="ssh://root@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d
+        run: DOCKER_HOST="ssh://root@$(echo $IMAGE_NAME)" docker-compose -f ./docker-compose.prod.yml up -d
 
       # - name: executing remote ssh commands using password
       #   uses: appleboy/ssh-action@master

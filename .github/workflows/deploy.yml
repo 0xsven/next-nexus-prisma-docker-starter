@@ -66,8 +66,8 @@ jobs:
       - name: Update docker compose with new images
         run: DOCKER_HOST="ssh://root@207.154.228.169" docker-compose -f ./docker-compose.prod.yml pull
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
 
       - name: Update docker compose with new images
         run: DOCKER_HOST="ssh://root@207.154.228.169" docker-compose -f ./docker-compose.prod.yml up -d

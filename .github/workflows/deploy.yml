@@ -44,6 +44,11 @@ jobs:
     needs: build_and_push
 
     steps:
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
+
       - name: Checkout master
         uses: actions/checkout@v2
 

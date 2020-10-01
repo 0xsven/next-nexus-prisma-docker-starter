@@ -70,7 +70,7 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
 
-      - name: Update docker compose with new images
+      - name: Docker-compose up
         run: DOCKER_HOST="ssh://root@$(echo $IMAGE_NAME)" docker-compose -f ./docker-compose.prod.yml up -d
 
       # - name: executing remote ssh commands using password

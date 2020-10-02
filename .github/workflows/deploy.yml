@@ -66,10 +66,10 @@ jobs:
       - name: Add ip to known hosts
         run: ssh-keyscan $DROPLET_IP >> ~/.ssh/known_hosts
 
-      - name: Pull latest images
+      - name: Log into registry
         run: DOCKER_HOST="ssh://root@$DROPLET_IP" docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
 
-      - name: Update docker compose with new images
+      - name: Pull latest images
         run: DOCKER_HOST="ssh://root@$DROPLET_IP" docker-compose -f ./docker-compose.prod.yml pull
 
       # - name: Setup tmate session

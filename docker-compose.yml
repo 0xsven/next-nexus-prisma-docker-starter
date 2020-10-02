@@ -1,12 +1,15 @@
 version: '3'
 services:
   frontend:
+    image: registry.digitalocean.com/literal/frontend:latest
     build: ./frontend
   backend:
+    image: registry.digitalocean.com/literal/backend:latest
     build: ./backend
     environment:
       - DATABASE_URL=${DATABASE_URL}
   nginx:
+    image: registry.digitalocean.com/literal/nginx:latest
     build: ./nginx
     ports:
       - 80:80

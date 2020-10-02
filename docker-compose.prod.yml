@@ -19,7 +19,6 @@ version: '3'
         - ./nginx/certbot/www:/var/www/certbot
       command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"''' # Checks every 6h for new ssl certificates
     certbot:
-      image: registry.digitalocean.com/literal/certbot:latest
       restart: unless-stopped
       image: certbot/certbot
       volumes:

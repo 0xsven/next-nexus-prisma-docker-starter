@@ -34,6 +34,7 @@ jobs:
         run: docker tag registry.digitalocean.com/literal/frontend:latest frontend
       - run: docker tag registry.digitalocean.com/literal/backend:latest backend
       - run: docker tag registry.digitalocean.com/literal/nginx:latest nginx
+      - run: docker tag registry.digitalocean.com/literal/certbot:latest certbot
 
       - name: Push to registry
         run: docker-compose push

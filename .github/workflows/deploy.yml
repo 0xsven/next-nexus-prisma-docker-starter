@@ -44,7 +44,7 @@ jobs:
     needs: build_and_push
 
     steps:
-      - name: Sleep for 10 seconds
+      - name: Sleep for 10 seconds for digital ocean registry to update
         uses: jakejarvis/wait-action@master
         with:
           time: '10s'
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v2
 
-      - name: Starts the ssh-agent
+      - name: Start the ssh-agent
         uses: webfactory/ssh-agent@v0.4.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_TEST_SSH_PRIVATE_KEY }}
